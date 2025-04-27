@@ -24,7 +24,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     );
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
 
-    // Start animation when entering page
     Future.delayed(const Duration(milliseconds: 300), () {
       setState(() {
         _showInput = true;
@@ -95,7 +94,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               children: [
                 FlutterMap(
                   options: MapOptions(
-                    center: LatLng(36.75, 3.05), // Algiers
+                    center: LatLng(36.75, 3.05), 
                     zoom: 12.0,
                   ),
                   children: [
