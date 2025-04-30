@@ -3,6 +3,12 @@ import 'package:mobilis/widgets/app_bar.dart';
 import 'package:mobilis/widgets/footer.dart';
 import 'assignment_table.dart';
 import 'zones_page.dart'; 
+import 'package:file_picker/file_picker.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
+
 
 class SmartZoningHomePage extends StatelessWidget {
   const SmartZoningHomePage({super.key});
@@ -34,23 +40,63 @@ class SmartZoningHomePage extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 30),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
-                      textStyle: const TextStyle(fontSize: 24),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MapPage()),
-                      );
-                    },
-                    child: const Text(
-                      'Télécharger un fichier CSV',
-                      style: TextStyle(fontSize: 24, color: Colors.white),
-                    ),
-                  ),
+
+
+
+
+
+
+
+
+
+
+ElevatedButton(
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.green,
+    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+    textStyle: const TextStyle(fontSize: 24),
+  ),
+  onPressed: () async {
+    // Pick a CSV file
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['csv'],
+    );
+
+    if (result != null && result.files.single.bytes != null) {
+      // Prepare multipart request
+      var uri = Uri.parse('http://192.168.98.211:8000/pdv/upload-csv/');
+      var dio = Dio();
+
+      FormData formData = FormData.fromMap({
+        "file": MultipartFile.fromBytes(result.files.single.bytes!, filename: result.files.single.name),
+        "n_clusters": "5", // optional: set number of clusters
+      });
+
+      try {
+        var response = await dio.post(uri.toString(), data: formData);
+
+        if (response.statusCode == 200) {
+          print('Upload success: ${response.data}');
+          // Navigate or show a success message
+        } else {
+          print('Upload failed with status: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error during upload: $e');
+      }
+    }
+  },
+  child: const Text(
+    'Télécharger un fichier CSV',
+    style: TextStyle(fontSize: 24, color: Colors.white),
+  ),
+),
+
+
+
+
+
                   const SizedBox(height: 150),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 40),
