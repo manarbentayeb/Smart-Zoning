@@ -2,101 +2,328 @@ import 'package:flutter/material.dart';
 import 'package:mobilis/widgets/app_bar.dart';
 import 'package:mobilis/widgets/footer.dart';
 
-class AssignmentTablePage extends StatelessWidget {
+class AssignmentTablePage extends StatefulWidget {
   const AssignmentTablePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final List<Map<String, String>> data = [
-      {"zone": "ZONE 01", "pdv": "Nom de pdv", "etat": "", "representative": ""},
-      {"zone": "ZONE 02", "pdv": "Nom de pdv", "etat": "", "representative": ""},
-      {"zone": "ZONE 03", "pdv": "Nom de pdv", "etat": "", "representative": ""},
-      {"zone": "ZONE 04", "pdv": "Nom de pdv", "etat": "", "representative": ""},
-      {"zone": "ZONE 05", "pdv": "Nom de pdv", "etat": "", "representative": ""},
-      {"zone": "ZONE 06", "pdv": "Nom de pdv", "etat": "", "representative": ""},
-    ];
+  State<AssignmentTablePage> createState() => _AssignmentTablePageState();
+}
 
+class _AssignmentTablePageState extends State<AssignmentTablePage> {
+  int? selectedZone;
+  final Map<int, Set<int>> selectedPDVs = {};
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  void _toggleSelection(int zoneIndex, int pdvIndex) {
+    setState(() {
+      final selected = selectedPDVs.putIfAbsent(zoneIndex, () => <int>{});
+      if (selected.contains(pdvIndex)) {
+        selected.remove(pdvIndex);
+      } else {
+        selected.add(pdvIndex);
+      }
+    });
+  }
+
+  void _showSearchPanel(BuildContext context, int zoneIndex) {
+    _searchController.clear();
+    _searchQuery = '';
+
+    showDialog(
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (context, setState) => Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          child: SizedBox(
+            width: 400,
+            height: 450,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey)),
+                  ),
+                  child: Text(
+                    'Assigner un représentant pour Zone ${zoneIndex.toString().padLeft(2, '0')}',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: const InputDecoration(
+                      hintText: 'Rechercher par email...',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                    onChanged: (value) {
+                      setState(() => _searchQuery = value.trim().toLowerCase());
+                    },
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Résultats :", style: TextStyle(fontWeight: FontWeight.w600)),
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.all(8),
+                    children: _filteredEmails(_searchQuery)
+                        .map((email) => _emailResultTile(email))
+                        .toList(),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.all(8),
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Fermer'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<String> _filteredEmails(String query) {
+    final emails = ["personne1@mobilis.dz", "personne2@mobilis.dz", "personne3@mobilis.dz"];
+    if (query.isEmpty) return emails;
+    return emails.where((email) => email.toLowerCase().contains(query)).toList();
+  }
+
+  static Widget _emailResultTile(String email) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.person_outline),
+          const SizedBox(width: 10),
+          Text(email, style: const TextStyle(fontSize: 15)),
+        ],
+      ),
+    );
+  }
+
+  void _showPDVList(BuildContext context, int zoneIndex, {bool selectable = false}) {
+    showDialog(
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (context, setState) => Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          child: SizedBox(
+            width: 350,
+            height: 400,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey)),
+                  ),
+                  child: Text(
+                    selectable
+                        ? 'Spécifier les PDVs pour Zone ${zoneIndex.toString().padLeft(2, '0')}'
+                        : 'Liste des PDVs pour Zone ${zoneIndex.toString().padLeft(2, '0')}',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(12),
+                      itemCount: 20,
+                      itemBuilder: (context, i) {
+                        final pdvTitle = 'PDV ${i + 1}';
+                        final pdvSubtitle = 'Adresse exemple ${i + 1}';
+                        if (selectable) {
+                          final isSelected = selectedPDVs[zoneIndex]?.contains(i) ?? false;
+                          return ListTile(
+                            onTap: () => setState(() => _toggleSelection(zoneIndex, i)),
+                            leading: Checkbox(
+                              value: isSelected,
+                              onChanged: (_) => setState(() => _toggleSelection(zoneIndex, i)),
+                            ),
+                            title: Text(pdvTitle),
+                            subtitle: Text(pdvSubtitle),
+                            tileColor: i % 2 == 0 ? Colors.grey[100] : null,
+                          );
+                        } else {
+                          return ListTile(
+                            leading: const Icon(Icons.store),
+                            title: Text(pdvTitle),
+                            subtitle: Text(pdvSubtitle),
+                            tileColor: i % 2 == 0 ? Colors.grey[100] : null,
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.all(8),
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Fermer'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _zoneButton(int index) {
+    return Center(
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.grey[200],
+          foregroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          textStyle: const TextStyle(fontSize: 14),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        ),
+        onPressed: () => _showPDVList(context, index),
+        child: Text('Zone ${index.toString().padLeft(2, '0')}'),
+      ),
+    );
+  }
+
+  Widget _assignerButton(int index) {
+    return Center(
+      child: MouseRegion(
+        onEnter: (_) => setState(() => selectedZone = index),
+        onExit: (_) => setState(() => selectedZone = null),
+        child: GestureDetector(
+          onTap: () => _showSearchPanel(context, index),
+          child: AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 200),
+            style: TextStyle(
+              color: selectedZone == index ? Colors.green : Colors.black87,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              decoration: TextDecoration.underline,
+            ),
+            child: const Text('Attribuer'),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _specifyPDVButton(int index) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () => _showPDVList(context, index, selectable: true),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.grey[200],
+          foregroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        ),
+        child: const Text("Spécifier les PDVs"),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          const CustomAppBar(currentPage: 'affectations'), 
+          const CustomAppBar(currentPage: 'affectations'),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(32),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 50),
                   const Text(
-                    'Tableau des Affectations',
+                    'Affectations par Zone',
                     style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 30),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width - 64,
-                      child: Container(
-                        color: Color.fromARGB(207, 255, 255, 255),
-                        child: DataTable(
-                          headingRowColor: MaterialStateProperty.all(Colors.grey[200]),
-                          columns: const [
-                            DataColumn(label: Text("Les Zones", style: TextStyle(fontWeight: FontWeight.bold))),
-                            DataColumn(label: Text("Les PDV", style: TextStyle(fontWeight: FontWeight.bold))),
-                            DataColumn(label: Text("Etat", style: TextStyle(fontWeight: FontWeight.bold))),
-                            DataColumn(label: Text("Représentant", style: TextStyle(fontWeight: FontWeight.bold))),
-                          ],
-                          rows: data.map((row) {
-                            return DataRow(
-                              cells: [
-                                DataCell(Text(row['zone']!)),
-                                DataCell(Text(row['pdv']!)),
-                                DataCell(Text(row['etat'] ?? '')),
-                                DataCell(
-                                  row['representative'] == null || row['representative']!.isEmpty
-                                      ? MouseRegion(
-                                          onEnter: (_) {
-                                          },
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (_) => const AssignRepresentativeDialog(),
-                                              );
-                                            },
-                                            child: const Text(
-                                              'Assigner',
-                                              style: TextStyle(
-                                                color: Colors.blue,
-                                                decoration: TextDecoration.underline,
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : Text(row['representative']!),
-                                ),
-                              ],
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    onPressed: () {
+                  Table(
+                    columnWidths: const {
+                      0: FlexColumnWidth(1),
+                      1: FlexColumnWidth(2),
+                      2: FlexColumnWidth(2),
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2DB34B),
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                      textStyle: const TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                    child: const Text(
-                      "Exporter en PDF",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    border: TableBorder.all(color: Colors.grey),
+                    children: [
+                      const TableRow(
+                        decoration: BoxDecoration(color: Colors.black12),
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(12),
+                            child: Center(
+                              child: Text(
+                                'Les Zones',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(12),
+                            child: Center(
+                              child: Text(
+                                'Les Représentants',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(12),
+                            child: Center(
+                              child: Text(
+                                'Sélectionner des PDVs',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      ...List.generate(8, (index) {
+                        return TableRow(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: _zoneButton(index + 1),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: _assignerButton(index + 1),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: _specifyPDVButton(index + 1),
+                            ),
+                          ],
+                        );
+                      }),
+                    ],
                   ),
                   const SizedBox(height: 100),
                   const CustomFooter(),
@@ -105,90 +332,6 @@ class AssignmentTablePage extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class AssignRepresentativeDialog extends StatelessWidget {
-  const AssignRepresentativeDialog({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final List<Map<String, String>> users = [
-      {
-        "name": "Ahmad Rosser",
-        "phone": "5684236526",
-        "email": "AhmadRosser1@mobilis.dz"
-      },
-      {
-        "name": "Ahmad Rosser",
-        "phone": "5684236527",
-        "email": "AhmadRosser2@mobilis.dz"
-      },
-    ];
-
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const TextField(
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                hintText: 'Search...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              child: Row(
-                children: const [
-                  Expanded(child: Text("#")),
-                  Expanded(flex: 2, child: Text("Nom")),
-                  Expanded(flex: 3, child: Text("Email")),
-                ],
-              ),
-            ),
-            ...users.asMap().entries.map((entry) {
-              final index = entry.key + 1;
-              final user = entry.value;
-              return Container(
-                color: index % 2 == 0 ? Colors.grey[100] : Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                child: Row(
-                  children: [
-                    Expanded(child: Text(index.toString())),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(user['name']!, style: const TextStyle(fontWeight: FontWeight.bold)),
-                          Text(user['phone']!, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Text(user['email']!, style: const TextStyle(color: Colors.grey)),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ],
-        ),
       ),
     );
   }
