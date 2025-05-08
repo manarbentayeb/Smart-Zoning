@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobilis/widgets/app_bar.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -13,7 +15,7 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  bool _showInput = false;
+  bool showInput = false;
 
   @override
   void initState() {
@@ -24,9 +26,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     );
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
 
+    // Start animation when entering page
     Future.delayed(const Duration(milliseconds: 300), () {
       setState(() {
-        _showInput = true;
+        showInput = true;
         _controller.forward();
       });
     });
@@ -94,7 +97,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               children: [
                 FlutterMap(
                   options: MapOptions(
-                    center: LatLng(36.75, 3.05), 
+                    center: LatLng(36.75, 3.05), // Algiers
                     zoom: 12.0,
                   ),
                   children: [
@@ -144,9 +147,61 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   }
 }
 
-class PDVDialog extends StatelessWidget {
+class PDVDialog extends StatefulWidget {
   final bool isAdd;
   const PDVDialog({super.key, required this.isAdd});
+
+  @override
+  _PDVDialogState createState() => _PDVDialogState();
+}
+
+class _PDVDialogState extends State<PDVDialog> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController communeController = TextEditingController();
+  final TextEditingController dairaController = TextEditingController();
+  final TextEditingController wilayaController = TextEditingController();
+  final TextEditingController latitudeController = TextEditingController();
+  final TextEditingController longitudeController = TextEditingController();
+
+  Future<void> _handleAction(BuildContext context) async {
+    final name = nameController.text;
+    final commune = communeController.text;
+    final daira = dairaController.text;
+    final wilaya = wilayaController.text;
+    final latitude = double.tryParse(latitudeController.text) ?? 0.0;
+    final longitude = double.tryParse(longitudeController.text) ?? 0.0;
+
+    final url = Uri.parse('http://localhost:50206/'); // Update with your Flask backend URL
+
+    try {
+      final response = widget.isAdd
+          ? await http.post(url,
+              headers: {'Content-Type': 'application/json'},
+              body: json.encode({
+                'name': name,
+                'commune': commune,
+                'daira': daira,
+                'wilaya': wilaya,
+                'latitude': latitude,
+                'longitude': longitude,
+                'id_zone': 1, // Replace with actual value
+                'state': 'active', // Optional
+                'order': 1, // Optional
+                'id_subzone': 1, // Replace with actual value
+              }))
+          : await http.delete(Uri.parse('http://localhost:5000/pdv/1')); // Replace with actual ID of PDV
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('PDV ${widget.isAdd ? 'added' : 'deleted'} successfully')));
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: ${response.body}')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
 
   InputDecoration _fieldDecoration(String hint) {
     return InputDecoration(
@@ -169,7 +224,7 @@ class PDVDialog extends StatelessWidget {
         children: [
           Center(
             child: Text(
-              isAdd ? 'Ajouter un PDV' : 'Supprimer un PDV',
+              widget.isAdd ? 'Ajouter un PDV' : 'Supprimer un PDV',
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -182,11 +237,11 @@ class PDVDialog extends StatelessWidget {
               Expanded(
                 child: Column(
                   children: [
-                    TextField(decoration: _fieldDecoration('Nom de PDV')),
+                    TextField(controller: nameController, decoration: _fieldDecoration('Nom de PDV')),
                     const SizedBox(height: 12),
-                    TextField(decoration: _fieldDecoration('Daira')),
+                    TextField(controller: dairaController, decoration: _fieldDecoration('Daira')),
                     const SizedBox(height: 12),
-                    TextField(decoration: _fieldDecoration('Latitude')),
+                    TextField(controller: latitudeController, decoration: _fieldDecoration('Latitude')),
                   ],
                 ),
               ),
@@ -194,11 +249,11 @@ class PDVDialog extends StatelessWidget {
               Expanded(
                 child: Column(
                   children: [
-                    TextField(decoration: _fieldDecoration('Commune')),
+                    TextField(controller: communeController, decoration: _fieldDecoration('Commune')),
                     const SizedBox(height: 12),
-                    TextField(decoration: _fieldDecoration('Wilaya')),
+                    TextField(controller: wilayaController, decoration: _fieldDecoration('Wilaya')),
                     const SizedBox(height: 12),
-                    TextField(decoration: _fieldDecoration('Longitude')),
+                    TextField(controller: longitudeController, decoration: _fieldDecoration('Longitude')),
                   ],
                 ),
               ),
@@ -207,16 +262,16 @@ class PDVDialog extends StatelessWidget {
           const SizedBox(height: 24),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: isAdd ? Colors.green[300] : Colors.red[300],
+              backgroundColor: widget.isAdd ? Colors.green[300] : Colors.red[300],
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => _handleAction(context),
             child: Text(
-              isAdd ? 'Ajouter' : 'Supprimer',
+              widget.isAdd ? 'Ajouter' : 'Supprimer',
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
