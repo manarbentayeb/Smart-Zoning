@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mobilis/widgets/app_bar.dart'; 
+import 'package:mobilis/widgets/app_bar.dart';
+import 'auth_page.dart';  
 
 class ProfilePage extends StatelessWidget {
-  final green = const Color(0xFF4CAF50); 
+  final green = const Color(0xFF4CAF50);
+
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +13,7 @@ class ProfilePage extends StatelessWidget {
       backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [
-          CustomAppBar(currentPage: 'profile'), 
+          CustomAppBar(currentPage: 'profile'),
           Expanded(
             child: Row(
               children: [
@@ -53,28 +56,37 @@ class ProfilePage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const Spacer(), 
-
+                      const Spacer(),
                       const SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           backgroundColor: green,
                         ),
-                        child: const Text("Paramètres"),
+                        child: const Text(
+                          "Paramètres",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                       const SizedBox(height: 10),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => AuthPage()),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: green,
                         ),
-                        child: const Text("Déconnexion"),
+                        child: const Text(
+                          "Déconnexion",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ],
                   ),
                 ),
-
                 Expanded(
                   child: Center(
                     child: Container(
@@ -96,21 +108,20 @@ class ProfilePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               buildFormRow([
-                                buildDropdown("Wilaya"),
-                                buildTextField("Nom"),
-                                buildTextField("Prenom"),
+                                buildDisplayBox("Nom", "Mohammed"),
+                                buildDisplayBox("Prenom", "Khalil"),
+                                buildDisplayBox("Role", "Manager"),
                               ]),
                               const SizedBox(height: 20),
                               buildFormRow([
-                                buildDropdown("Sexe"),
-                                buildTextField("Adresse"),
-                                buildTextField("Date de naissance"),
+                                buildDisplayBox("CSM", "CSM123"),
+                                buildDisplayBox("Agence", "Agence X"),
+                                buildDisplayBox("Wilaya", "Alger"),
                               ]),
                               const SizedBox(height: 20),
                               buildFormRow([
-                                buildDropdown("Role"),
-                                buildTextField("Numéro de téléphone"),
-                                buildTextField("Poste"),
+                                buildDisplayBox("Email", "mohammedkhalil@mobilis.dz"),
+                                buildDisplayBox("Numéro de téléphone", "0512843951"),
                               ]),
                             ],
                           ),
@@ -134,34 +145,36 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget buildTextField(String label) {
+  Widget buildDisplayBox(String label, String value) {
     return SizedBox(
       width: 240,
-      child: TextField(
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.green),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.green),
-          ),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: green.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
         ),
-      ),
-    );
-  }
-
-  Widget buildDropdown(String label) {
-    return SizedBox(
-      width: 240,
-      child: DropdownButtonFormField<String>(
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.green),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.green),
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: Colors.black87,
+              ),
+            ),
+          ],
         ),
-        items: const [],
-        onChanged: (value) {},
       ),
     );
   }
