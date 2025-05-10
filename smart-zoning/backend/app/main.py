@@ -1,37 +1,45 @@
+# app/main.py
 from fastapi import FastAPI
-import uvicorn
-from app.routes import pdv_routes
 from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+import logging
+from app.routes import pdv_routes
 
+# --- Logging setup (do this before you instantiate FastAPI) ---
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler(),           # Log to console
+        logging.FileHandler("app.log")     # Log to file
+    ]
+)
+logger = logging.getLogger(__name__)
+logger.info("Starting Smart Zoning API")
+
+# --- FastAPI app ---
 app = FastAPI(
-    title="PDV Clustering API",
-    description="API for clustering PDV (points of sale) data",
+    title="Smart Zoning API",
+    description="API for Smart Zoning and PDV management",
     version="1.0.0"
 )
 
-# Add CORS middleware to allow requests from your Flutter app
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with your actual frontend domain
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# INCLUDE THE CORRECT ROUTER
+from app.routes import pdv_routes
+app.include_router(pdv_routes.router, prefix="/pdv", tags=["PDV"])
 
-
-
-
-# Include routes
-app.include_router(pdv_routes.router, prefix="/pdv", tags=["PDV Clustering"])
-
-@app.get("/", tags=["Root"])
-async def read_root():
-    return {
-        "message": "Welcome to PDV Clustering API",
-        "docs": "/docs",
-        "upload_endpoint": "/pdv/upload-csv/"
-    }
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the Smart Zoning API"}
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

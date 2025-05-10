@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 
+import '../config.dart';
 
 class SmartZoningHomePage extends StatelessWidget {
   const SmartZoningHomePage({super.key});
@@ -49,7 +50,6 @@ class SmartZoningHomePage extends StatelessWidget {
 
 
 
-
 ElevatedButton(
   style: ElevatedButton.styleFrom(
     backgroundColor: Colors.green,
@@ -57,34 +57,190 @@ ElevatedButton(
     textStyle: const TextStyle(fontSize: 24),
   ),
   onPressed: () async {
-    // Pick a CSV file
+    // 1) Pick a CSV file
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['csv'],
     );
+    if (result == null || result.files.single.bytes == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Aucun fichier sélectionné.'))
+      );
+      return;
+    }
 
-    if (result != null && result.files.single.bytes != null) {
-      // Prepare multipart request
-      var uri = Uri.parse('http://192.168.98.211:8000/pdv/upload-csv/');
-      var dio = Dio();
+    final bytes = result.files.single.bytes!;
+    final name = result.files.single.name;
+    print("Picked CSV: $name, size=${bytes.length}");
 
-      FormData formData = FormData.fromMap({
-        "file": MultipartFile.fromBytes(result.files.single.bytes!, filename: result.files.single.name),
-        "n_clusters": "5", // optional: set number of clusters
-      });
-
-      try {
-        var response = await dio.post(uri.toString(), data: formData);
-
-        if (response.statusCode == 200) {
-          print('Upload success: ${response.data}');
-          // Navigate or show a success message
-        } else {
-          print('Upload failed with status: ${response.statusCode}');
-        }
-      } catch (e) {
-        print('Error during upload: $e');
+    // Show processing dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 20),
+              Text("Traitement en cours..."),
+              SizedBox(height: 10),
+              Text("Étape 1: Chargement du fichier", style: TextStyle(fontSize: 12)),
+            ],
+          ),
+        );
       }
+    );
+
+    // 2) Prepare multipart request
+    var dio = Dio();
+    // Add timeouts to handle network issues
+    dio.options.connectTimeout = const Duration(seconds: 30);
+    dio.options.receiveTimeout = const Duration(seconds: 60);
+    dio.options.sendTimeout = const Duration(seconds: 60);
+    
+    FormData formData = FormData.fromMap({
+      "file": MultipartFile.fromBytes(bytes, filename: name),
+      "n_clusters": "5",
+      "enable_detailed_logging": "true", // Request detailed processing logs
+    });
+
+    try {
+      // 3) Use the endpoint from config
+      final endpoint = BackendConfig.uploadCsvEndpoint;
+      print("Sending upload request to: $endpoint");
+
+      // Update processing dialog
+      Navigator.pop(context);
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 20),
+                Text("Envoi et traitement en cours..."),
+                SizedBox(height: 10),
+                Text("Étape 2: Prétraitement des données", style: TextStyle(fontSize: 12)),
+                Text("- Nettoyage des données", style: TextStyle(fontSize: 12)),
+                Text("- Suppression des coordonnées invalides", style: TextStyle(fontSize: 12)),
+                Text("- Filtrage des PDVs hors zone", style: TextStyle(fontSize: 12)),
+              ],
+            ),
+          );
+        }
+      );
+
+      // Log the request before sending
+      print("Sending formData: ${formData.fields}");
+      
+      final resp = await dio.post(
+        endpoint, 
+        data: formData,
+        onSendProgress: (sent, total) {
+          print("Upload progress: ${(sent / total * 100).toStringAsFixed(2)}%");
+        },
+      );
+      
+      print("Response statusCode: ${resp.statusCode}");
+      print("Response data: ${resp.data}");
+
+      // Close processing dialog
+      Navigator.pop(context);
+
+      if (resp.statusCode == 200) {
+        // Display detailed results
+        Map<String, dynamic> data = resp.data;
+        
+        // Extract processing statistics
+        int originalPoints = data['original_point_count'] ?? 0;
+        int validPoints = data['valid_point_count'] ?? 0;
+        int removedPoints = originalPoints - validPoints;
+        
+        // Get detailed statistics if available
+        Map<String, dynamic> detailedStats = data['detailed_stats'] ?? {};
+        int nanDropped = detailedStats['nan_dropped'] ?? 0;
+        int invalidCoords = detailedStats['invalid_coords'] ?? 0;
+        int invalidRange = detailedStats['invalid_range'] ?? 0;
+        int outsideBoundary = detailedStats['outside_boundary'] ?? 0;
+        
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Prétraitement complété"),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Points originaux: $originalPoints", 
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text("Points valides: $validPoints", 
+                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
+                    Text("Points supprimés: $removedPoints", 
+                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+                    const Divider(),
+                    if (detailedStats.isNotEmpty) ...[
+                      const Text("Détails des suppressions:", 
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("- Valeurs manquantes: $nanDropped"),
+                      Text("- Coordonnées invalides: $invalidCoords"),
+                      Text("- Coordonnées hors plage: $invalidRange"),
+                      Text("- Points hors wilaya: $outsideBoundary"),
+                    ],
+                    const SizedBox(height: 10),
+                    if (removedPoints == 0)
+                      const Text(
+                        "Attention: Aucun point n'a été supprimé durant le prétraitement. "
+                        "Vérifiez que votre fichier contient des coordonnées correctes et "
+                        "qu'il correspond bien à la wilaya indiquée.",
+                        style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+                      ),
+                    const SizedBox(height: 10),
+                    const Text("Les clusters ont été générés avec succès!", 
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Fermer"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const MapPage()),
+                    );
+                  },
+                  child: const Text("Voir sur la carte"),
+                ),
+              ],
+            );
+          }
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur: ${resp.statusCode}'))
+        );
+      }
+    } catch (e) {
+      // Close processing dialog if still showing
+      Navigator.of(context, rootNavigator: true).pop();
+      
+      print('Upload error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur lors de l\'envoi: $e'))
+      );
     }
   },
   child: const Text(
@@ -92,6 +248,22 @@ ElevatedButton(
     style: TextStyle(fontSize: 24, color: Colors.white),
   ),
 ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
