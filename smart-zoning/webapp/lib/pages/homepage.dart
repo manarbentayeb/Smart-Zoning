@@ -96,9 +96,10 @@ ElevatedButton(
     // 2) Prepare multipart request
     var dio = Dio();
     // Add timeouts to handle network issues
-    dio.options.connectTimeout = const Duration(seconds: 30);
-    dio.options.receiveTimeout = const Duration(seconds: 60);
-    dio.options.sendTimeout = const Duration(seconds: 60);
+    dio.options.connectTimeout = const Duration(seconds: 90);
+    dio.options.receiveTimeout = const Duration(seconds: 120);
+    dio.options.sendTimeout = const Duration(seconds: 120);
+
     
     FormData formData = FormData.fromMap({
       "file": MultipartFile.fromBytes(bytes, filename: name),
