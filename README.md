@@ -37,7 +37,7 @@ The **Smart Zoning Solution** aims to replace the manual and non-optimized PDV a
 The repository is organized into several directories and files, each serving a specific purpose in the application development. Below is a breakdown of the structure:
 
 Smart-Zoning Project Structure
-<pre> ```Smart-Zoning-main/
+<pre> Smart-Zoning-main/
 ├── README.md
 ├── setup\_structure.sh
 ├── smart-zoning/
@@ -129,47 +129,46 @@ Smart-Zoning Project Structure
 │       └── assets/
 │           └── profile\_picture.jpg
 └── webapp/
-├── .flutter-plugins
-├── .flutter-plugins-dependencies
-├── .gitignore
-├── .metadata
-├── analysis\_options.yaml
-├── pubspec.lock
-├── pubspec.yaml
-├── README.md
-├── assets/
-│   ├── assignment.json
-│   ├── representatives.json
-│   └── images/
-│       ├── gps\_map.png
-│       ├── mini\_map.png
-│       ├── mobilis-logo.png
-│       └── zoning.png
-└── lib/
-├── config.dart
-├── main.dart
-├── database/
-│   └── local\_database.dart
-├── model/
-│   ├── assignement.dart
-│   ├── manager\_model.dart
-│   ├── pdv\_model.dart
-│   └── representative\_model.dart
-├── pages/
-│   ├── assignment.json
-│   ├── assignment\_table.dart
-│   ├── auth\_page.dart
-│   ├── edit\_profile.dart
-│   ├── homepage.dart
-│   ├── profile.dart
-│   └── zones\_page.dart
-├── services/
-│   └── api\_service.dart
-└── widgets/
-├── app\_bar.dart
-└── footer.dart
-
- ``` </pre>
+    ├── .flutter-plugins
+    ├── .flutter-plugins-dependencies
+    ├── .gitignore
+    ├── .metadata
+    ├── analysis_options.yaml
+    ├── pubspec.lock
+    ├── pubspec.yaml
+    ├── README.md
+    ├── assets/
+    │   ├── assignment.json
+    │   ├── representatives.json
+    │   └── images/
+    │       ├── gps_map.png
+    │       ├── mini_map.png
+    │       ├── mobilis-logo.png
+    │       └── zoning.png
+    └── lib/
+        ├── config.dart
+        ├── main.dart
+        ├── database/
+        │   └── local_database.dart
+        ├── model/
+        │   ├── assignement.dart
+        │   ├── manager_model.dart
+        │   ├── pdv_model.dart
+        │   └── representative_model.dart
+        ├── pages/
+        │   ├── assignment.json
+        │   ├── assignment_table.dart
+        │   ├── auth_page.dart
+        │   ├── edit_profile.dart
+        │   ├── homepage.dart
+        │   ├── profile.dart
+        │   └── zones_page.dart
+        ├── services/
+        │   └── api_service.dart
+        └── widgets/
+            ├── app_bar.dart
+            └── footer.dart
+</pre>
             
 ### Tech Stack 
 
