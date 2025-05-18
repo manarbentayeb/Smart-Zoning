@@ -37,7 +37,7 @@ The **Smart Zoning Solution** aims to replace the manual and non-optimized PDV a
 The repository is organized into several directories and files, each serving a specific purpose in the application development. Below is a breakdown of the structure:
 
 Smart-Zoning Project Structure
-<pre> ``i man this what i am writitng in th read me in github Smart-Zoning-main/
+<pre> ```Smart-Zoning-main/
 ├── README.md
 ├── setup\_structure.sh
 ├── smart-zoning/
