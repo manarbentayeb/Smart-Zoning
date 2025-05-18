@@ -37,16 +37,16 @@ The **Smart Zoning Solution** aims to replace the manual and non-optimized PDV a
 The repository is organized into several directories and files, each serving a specific purpose in the application development. Below is a breakdown of the structure:
 
 Smart-Zoning Project Structure
-<pre> Smart-Zoning-main/
+<pre>Smart-Zoning-main/
 ├── README.md
-├── setup\_structure.sh
+├── setup_structure.sh
 ├── smart-zoning/
 │   ├── .gitignore
 │   └── README.md
 ├── backend/
 │   ├── app.log
 │   ├── requirements.txt
-│   ├── start\_server.bat
+│   ├── start_server.bat
 │   ├── app/
 │   │   ├── main.py
 │   │   ├── requirements.txt
@@ -57,40 +57,40 @@ Smart-Zoning Project Structure
 │   │   │   ├── database.py
 │   │   │   └── init.py
 │   │   ├── ml/
-│   │   │   ├── add\_pdv.py
+│   │   │   ├── add_pdv.py
 │   │   │   ├── clustering.py
-│   │   │   ├── cluster\_rebalancer.py
-│   │   │   ├── delete\_pdv.py
+│   │   │   ├── cluster_rebalancer.py
+│   │   │   ├── delete_pdv.py
 │   │   │   ├── preprocessing.py
 │   │   │   └── init.py
 │   │   ├── models/
-│   │   │   ├── pdv\_models.py
-│   │   │   ├── user\_models.py
-│   │   │   ├── zone\_models.py
+│   │   │   ├── pdv_models.py
+│   │   │   ├── user_models.py
+│   │   │   ├── zone_models.py
 │   │   │   └── init.py
 │   │   ├── routes/
-│   │   │   ├── pdv\_routes.py
-│   │   │   ├── user\_routes.py
-│   │   │   ├── zone\_routes.py
+│   │   │   ├── pdv_routes.py
+│   │   │   ├── user_routes.py
+│   │   │   ├── zone_routes.py
 │   │   │   └── init.py
 │   │   └── services/
-│   │       ├── clustering\_service.py
-│   │       ├── notification\_service.py
-│   │       ├── tsp\_service.py
+│   │       ├── clustering_service.py
+│   │       ├── notification_service.py
+│   │       ├── tsp_service.py
 │   │       └── init.py
-│   ├── uploaded\_files/
-│   │   └── PDV\_dataset\_sample\_cc5f6922.csv
-│   └── Wilaya\_CSVs/
-│       ├── best\_workload\_parameters.json
-│       ├── cleaned\_pdv\_data.csv
-│       ├── initial\_clusters.json
-│       └── rebalanced\_clusters.json
+│   ├── uploaded_files/
+│   │   └── PDV_dataset_sample_cc5f6922.csv
+│   └── Wilaya_CSVs/
+│       ├── best_workload_parameters.json
+│       ├── cleaned_pdv_data.csv
+│       ├── initial_clusters.json
+│       └── rebalanced_clusters.json
 ├── docs/
-│   ├── api\_endpoints.md
-│   ├── architecture\_diagram.png
+│   ├── api_endpoints.md
+│   ├── architecture_diagram.png
 │   ├── ERD.png
 │   ├── roadmap.md
-│   └── use\_case\_diagram.png
+│   └── use_case_diagram.png
 ├── mobileapp/
 │   ├── .flutter-plugins
 │   ├── .flutter-plugins-dependencies
@@ -115,19 +115,19 @@ Smart-Zoning Project Structure
 │       │   ├── Inscription/
 │       │   │   ├── LoginLink.dart
 │       │   │   ├── SignUpButton.dart
-│       │   │   └── sign\_up.dart
+│       │   │   └── sign_up.dart
 │       │   ├── PDVs/
 │       │   │   ├── list de pdv.dart
 │       │   │   └── QRCode.dart
 │       │   ├── Profile/
 │       │   │   ├── inputfieldformat.dart
 │       │   │   ├── MenuItem.dart
-│       │   │   ├── modify\_profile.dart
+│       │   │   ├── modify_profile.dart
 │       │   │   └── profile.dart
 │       │   └── Settings/
 │       │       └── Settings.dart
 │       └── assets/
-│           └── profile\_picture.jpg
+│           └── profile_picture.jpg
 └── webapp/
     ├── .flutter-plugins
     ├── .flutter-plugins-dependencies
@@ -168,6 +168,7 @@ Smart-Zoning Project Structure
         └── widgets/
             ├── app_bar.dart
             └── footer.dart
+
 </pre>
             
 ### Tech Stack 
