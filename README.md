@@ -36,6 +36,7 @@ The **Smart Zoning Solution** aims to replace the manual and non-optimized PDV a
 
 The repository is organized into several directories and files, each serving a specific purpose in the application development. Below is a breakdown of the structure:
 
+Smart-Zoning Project Structure
 Smart-Zoning-main/
 ├── README.md
 ├── setup_structure.sh
@@ -199,8 +200,7 @@ Smart-Zoning-main/
         └── widgets/
             ├── app_bar.dart
             └── footer.dart
-
-
+            
 ### Tech Stack 
 
   - **Frontend (Mobile/Web)**: Flutter
