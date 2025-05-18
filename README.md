@@ -3,7 +3,7 @@
 
 ![Project Status](https://img.shields.io/badge/Status-In%20Development-yellow)  
 ![License](https://img.shields.io/badge/License-Educational-blue)  
-![Contributors](https://img.shields.io/badge/Contributors-5-brightgreen)  
+![Contributors](https://img.shields.io/badge/Contributors-4-brightgreen)  
 Smart Zoning System for Mobilis - Web and Mobile Applications for PDV Zone Management
 
 ## Overview  
@@ -28,6 +28,16 @@ The **Smart Zoning Solution** aims to replace the manual and non-optimized PDV a
 | **Task Assignment**           | Digitally assign PDVs to representatives based on smart zones.                                        |
 | **Performance Reporting**     | Monitor and report on representative activity, assignment efficiency, and zone coverage.              |
 | **User Authentication**       | Secure access for different user roles to manage and track system operations.                         |
+
+
+---
+
+## Repository Structure
+
+The repository is organized into several directories and files, each serving a specific purpose in the application development. Below is a breakdown of the structure:
+
+
+
 
 
 ## License  
