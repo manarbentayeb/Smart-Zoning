@@ -36,6 +36,38 @@ The **Smart Zoning Solution** aims to replace the manual and non-optimized PDV a
 
 The repository is organized into several directories and files, each serving a specific purpose in the application development. Below is a breakdown of the structure:
 
+smart-zoning-project/
+├── backend/
+│   ├── Wilayas_CSVs/             # CSV data for Wilaya segmentation
+│   ├── app/                      # Backend application code
+│   ├── uploaded_files/          # Uploaded PDV or user files for processing
+│
+├── mobile_app/
+│   ├── lib/
+│   │   ├── core/                 # Constants, themes, utilities, config
+│   │   ├── data/                 # Data models and API sources
+│   │   ├── domain/               # Business logic, use cases
+│   │   ├── presentation/         # Screens, widgets, UI components
+│   │   ├── routes/               # Navigation routes
+│   │   └── main.dart             # Flutter app entry point
+│   ├── assets/                  # Images
+│   └── pubspec.yaml             # Flutter dependencies and configuration
+│
+├── webapp/
+│   ├── lib/
+│   │   ├── app/
+│   │   │   ├── database/        # window storage 
+│   │   │   ├── model/           # data models 
+│   │   │   ├── pages/           # Screens 
+│   │   │   ├── services/        
+│   │   │   ├── widgets/         # Reusable UI components
+│   │   │        
+│   │   └── main.dart            # Flutter app entry point
+│   └── pubspec.yaml             # Flutter dependencies and configuration
+│
+├── docs/
+├── assets/
+└── README.md
 
 
 
