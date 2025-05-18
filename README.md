@@ -36,42 +36,245 @@ The **Smart Zoning Solution** aims to replace the manual and non-optimized PDV a
 
 The repository is organized into several directories and files, each serving a specific purpose in the application development. Below is a breakdown of the structure:
 
-smart-zoning-project/
+Smart-Zoning-main/
+├── README.md
+├── setup_structure.sh
+│
+├── smart-zoning/
+│   ├── .gitignore
+│   └── README.md
+│
 ├── backend/
-│   ├── Wilayas_CSVs/             # CSV data for Wilaya segmentation
-│   ├── app/                      # Backend application code
-│   ├── uploaded_files/          # Uploaded PDV or user files for processing
-│
-├── mobile_app/
-│   ├── lib/
-│   │   ├── core/                 # Constants, themes, utilities, config
-│   │   ├── data/                 # Data models and API sources
-│   │   ├── domain/               # Business logic, use cases
-│   │   ├── presentation/         # Screens, widgets, UI components
-│   │   ├── routes/               # Navigation routes
-│   │   └── main.dart             # Flutter app entry point
-│   ├── assets/                  # Images
-│   └── pubspec.yaml             # Flutter dependencies and configuration
-│
-├── webapp/
-│   ├── lib/
-│   │   ├── app/
-│   │   │   ├── database/        # window storage 
-│   │   │   ├── model/           # data models 
-│   │   │   ├── pages/           # Screens 
-│   │   │   ├── services/        
-│   │   │   ├── widgets/         # Reusable UI components
-│   │   │        
-│   │   └── main.dart            # Flutter app entry point
-│   └── pubspec.yaml             # Flutter dependencies and configuration
+│   ├── app.log
+│   ├── requirements.txt
+│   ├── start_server.bat
+│   │
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── requirements.txt
+│   │   ├── __init__.py
+│   │   │
+│   │   ├── data/
+│   │   │   └── all-wilayas.geojson
+│   │   │
+│   │   ├── database/
+│   │   │   ├── database.py
+│   │   │   └── __init__.py
+│   │   │
+│   │   ├── ml/
+│   │   │   ├── add_pdv.py
+│   │   │   ├── clustering.py
+│   │   │   ├── cluster_rebalancer.py
+│   │   │   ├── delete_pdv.py
+│   │   │   ├── preprocessing.py
+│   │   │   └── __init__.py
+│   │   │
+│   │   ├── models/
+│   │   │   ├── pdv_models.py
+│   │   │   ├── user_models.py
+│   │   │   ├── zone_models.py
+│   │   │   └── __init__.py
+│   │   │
+│   │   ├── routes/
+│   │   │   ├── pdv_routes.py
+│   │   │   ├── user_routes.py
+│   │   │   ├── zone_routes.py
+│   │   │   └── __init__.py
+│   │   │
+│   │   └── services/
+│   │       ├── clustering_service.py
+│   │       ├── notification_service.py
+│   │       ├── tsp_service.py
+│   │       └── __init__.py
+│   │
+│   ├── uploaded_files/
+│   │   └── PDV_dataset_sample_cc5f6922.csv
+│   │
+│   └── Wilaya_CSVs/
+│       ├── best_workload_parameters.json
+│       ├── cleaned_pdv_data.csv
+│       ├── initial_clusters.json
+│       └── rebalanced_clusters.json
 │
 ├── docs/
-├── assets/
-└── README.md
+│   ├── api_endpoints.md
+│   ├── architecture_diagram.png
+│   ├── ERD.png
+│   ├── roadmap.md
+│   └── use_case_diagram.png
+│
+├── mobileapp/
+│   ├── .flutter-plugins
+│   ├── .flutter-plugins-dependencies
+│   ├── pubspec.lock
+│   ├── pubspec.yaml
+│   ├── README.md
+│   │
+│   └── lib/
+│       ├── main.dart
+│       │
+│       ├── app/
+│       │   ├── acceuil/
+│       │   │   └── home.dart
+│       │   │
+│       │   ├── ChangerMotDePasse/
+│       │   │   ├── change pass.dart
+│       │   │   └── PasswordField.dart
+│       │   │
+│       │   ├── home/
+│       │   │   └── side bar.dart
+│       │   │
+│       │   ├── Identification/
+│       │   │   ├── InputField.dart
+│       │   │   ├── login.dart
+│       │   │   ├── LoginButton.dart
+│       │   │   └── SignUpLink.dart
+│       │   │
+│       │   ├── Inscription/
+│       │   │   ├── LoginLink.dart
+│       │   │   ├── SignUpButton.dart
+│       │   │   └── sign_up.dart
+│       │   │
+│       │   ├── PDVs/
+│       │   │   ├── list de pdv.dart
+│       │   │   └── QRCode.dart
+│       │   │
+│       │   ├── Profile/
+│       │   │   ├── inputfieldformat.dart
+│       │   │   ├── MenuItem.dart
+│       │   │   ├── modify_profile.dart
+│       │   │   └── profile.dart
+│       │   │
+│       │   └── Settings/
+│       │       └── Settings.dart
+│       │
+│       └── assets/
+│           └── profile_picture.jpg
+│
+└── webapp/
+    ├── .flutter-plugins
+    ├── .flutter-plugins-dependencies
+    ├── .gitignore
+    ├── .metadata
+    ├── analysis_options.yaml
+    ├── pubspec.lock
+    ├── pubspec.yaml
+    ├── README.md
+    │
+    ├── assets/
+    │   ├── assignment.json
+    │   ├── representatives.json
+    │   │
+    │   └── images/
+    │       ├── gps_map.png
+    │       ├── mini_map.png
+    │       ├── mobilis-logo.png
+    │       └── zoning.png
+    │
+    └── lib/
+        ├── config.dart
+        ├── main.dart
+        │
+        ├── database/
+        │   └── local_database.dart
+        │
+        ├── model/
+        │   ├── assignement.dart
+        │   ├── manager_model.dart
+        │   ├── pdv_model.dart
+        │   └── representative_model.dart
+        │
+        ├── pages/
+        │   ├── assignment.json
+        │   ├── assignment_table.dart
+        │   ├── auth_page.dart
+        │   ├── edit_profile.dart
+        │   ├── homepage.dart
+        │   ├── profile.dart
+        │   └── zones_page.dart
+        │
+        ├── services/
+        │   └── api_service.dart
+        │
+        └── widgets/
+            ├── app_bar.dart
+            └── footer.dart
 
 
+### Tech Stack 
+
+  - **Frontend (Mobile/Web)**: Flutter
+  - **Backend**:  FastAPI (Python) 
+  - **Hosting**:  Localhost
+
+###  Prerequisites  
+1. **Flutter SDk**
+2. **Dart SDK**
+3. **IDE/Editor**
+   - Install an IDE or editor to work with Flutter:
+     - **Visual Studio Code** with Flutter and Dart plugins
+     
+4. **Flutter Web and Mobile Support**
+– Ensure you have Flutter web and mobile support enabled. Follow the instructions in the Flutter documentation to enable support for your target platforms.
+
+6. **Operating System Requirements**
+- **Windows**:
+  - Install **Android Studio** for Android development.
+  - Ensure **Chrome** is installed for Flutter web support.
+- **macOS**:
+  - Install **Xcode** for iOS development.
+  - Install **Android Studio** for Android.
+  - Ensure **Chrome** or **Safari** is available for web.
+- **Linux**:
+  - Install **Android Studio** for Android development.
+  - Ensure **Chrome** is installed for Flutter web development.
+
+7. **Git**
+8. **Flutter Dependencies**
+   - You may need to install additional Flutter packages. Check the `pubspec.yaml` file for required dependencies and run:
+     ```
+     flutter pub get
+     ```
 
 
+### Steps to Set Up  
+
+1. **Clone the repository**  
+   ```bash
+   git clone https://github.com/manarbentayeb/Smart-Zoning.git
+   cd Smart-Zoning
+   ```
+
+2. **Install Flutter dependencies**  
+   For both web and mobile apps:
+   ```bash
+   cd webapp
+   flutter pub get
+
+   cd ../mobile_app
+   flutter pub get
+   ```
+
+3. **Run the backend server**  
+   ```bash
+   cd ../backend
+   uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+   ```
+
+4. **Run the Web App**  
+   ```bash
+   cd ../webapp
+   flutter run -d chrome
+   ```
+
+5. **Run the Mobile App**  
+   ```bash
+   cd ../mobile_app
+   flutter run -d <device_id>  # e.g., emulator-5554 or iPhone
+   ```
+
+ 
+---
 ## License  
 This project was originally proposed by Obilis Company as a contribution in collaboration with our school. While developed in an academic setting, it is intended for potential commercial use and practical application.
 
