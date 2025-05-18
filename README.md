@@ -50,34 +50,34 @@ Smart-Zoning-main/
 │   ├── app/
 │   │   ├── main.py
 │   │   ├── requirements.txt
-│   │   ├── __init__.py
+│   │   ├── init.py
 │   │   ├── data/
 │   │   │   └── all-wilayas.geojson
 │   │   ├── database/
 │   │   │   ├── database.py
-│   │   │   └── __init__.py
+│   │   │   └── init.py
 │   │   ├── ml/
 │   │   │   ├── add_pdv.py
 │   │   │   ├── clustering.py
 │   │   │   ├── cluster_rebalancer.py
 │   │   │   ├── delete_pdv.py
 │   │   │   ├── preprocessing.py
-│   │   │   └── __init__.py
+│   │   │   └── init.py
 │   │   ├── models/
 │   │   │   ├── pdv_models.py
 │   │   │   ├── user_models.py
 │   │   │   ├── zone_models.py
-│   │   │   └── __init__.py
+│   │   │   └── init.py
 │   │   ├── routes/
 │   │   │   ├── pdv_routes.py
 │   │   │   ├── user_routes.py
 │   │   │   ├── zone_routes.py
-│   │   │   └── __init__.py
+│   │   │   └── init.py
 │   │   └── services/
 │   │       ├── clustering_service.py
 │   │       ├── notification_service.py
 │   │       ├── tsp_service.py
-│   │       └── __init__.py
+│   │       └── init.py
 │   ├── uploaded_files/
 │   │   └── PDV_dataset_sample_cc5f6922.csv
 │   └── Wilaya_CSVs/
