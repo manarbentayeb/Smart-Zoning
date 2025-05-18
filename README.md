@@ -7,9 +7,9 @@
 Smart Zoning System for Mobilis - Web and Mobile Applications for PDV Zone Management
 
 ## Overview  
-The **Smart Zoning Solution** aims to replace the manual and non-optimized PDV assignment for representatives by digitizing the management and assignment of PDV tasks. This solution will help mobile entities efficiently manage PDV visits, assignment data, and representative performance tracking.
+The **Smart Zoning Solution** aims to replace the manual and non-optimized PDV assignment for representatives by digitizing the management and assignment of PDV tasks. This solution will help mobilis entities efficiently manage PDV visits , representative assignments , and representative performance tracking.
 
-> **This project is currently under development phase.** The structure, functionality, and features will evolve as the team progresses. Teachers have access to this repository to monitor and review our progress.
+> **This project is currently under development phase.** The structure, functionality, and features will evolve as the team progresses. Teachers have access to this repository to monitor  our progress.
 
 ## Objectives  
 - Replace the manual process of handling PDVs assignemnt and zone partitioning with a secure digital system.  
@@ -22,8 +22,8 @@ The **Smart Zoning Solution** aims to replace the manual and non-optimized PDV a
 
 | **Feature**                   | **Description**                                                                                       |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------- |
-| **Smart Zoning Model**        | Automatically segments PDVs by region (wilaya) using intelligent zoning instead of manual assignment. |
-| **PDV Management**            | Add, update, and organize PDVs with relevant location and task data.                                  |
+| **Smart Zoning Model**        | Automatically segments PDVs into zones using intelligent zoning instead of manual assignment. |
+| **PDV Management**            | Add, delete  PDVs with relevant location.                                  |
 | **Representative Management** | Assign representatives to optimized PDV zones and track their performance.                            |
 | **Task Assignment**           | Digitally assign PDVs to representatives based on smart zones.                                        |
 | **Performance Reporting**     | Monitor and report on representative activity, assignment efficiency, and zone coverage.              |
@@ -36,7 +36,6 @@ The **Smart Zoning Solution** aims to replace the manual and non-optimized PDV a
 
 The repository is organized into several directories and files, each serving a specific purpose in the application development. Below is a breakdown of the structure:
 
-Smart-Zoning Project Structure
 <pre>Smart-Zoning-main/
 ├── README.md
 ├── setup_structure.sh
@@ -206,7 +205,6 @@ Smart-Zoning Project Structure
      flutter pub get
      ```
 
-
 ### Steps to Set Up  
 
 1. **Clone the repository**  
@@ -221,32 +219,32 @@ Smart-Zoning Project Structure
    cd webapp
    flutter pub get
 
-   cd ../mobile_app
+   cd mobapp
    flutter pub get
    ```
 
 3. **Run the backend server**  
    ```bash
-   cd ../backend
+   cd backend
    uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
    ```
 
 4. **Run the Web App**  
    ```bash
-   cd ../webapp
+   cd webapp
    flutter run -d chrome
    ```
 
 5. **Run the Mobile App**  
    ```bash
-   cd ../mobile_app
-   flutter run -d <device_id>  # e.g., emulator-5554 or iPhone
+   cd  mobile_app
+   flutter run -d <device_id>  
    ```
 
  
 ---
 ## License  
-This project was originally proposed by Obilis Company as a contribution in collaboration with our school. While developed in an academic setting, it is intended for potential commercial use and practical application.
+This project was originally proposed by Mobilis Company as a contribution in collaboration with our school. While developed in an academic setting, it is intended for potential commercial use and practical application.
 
 
 
