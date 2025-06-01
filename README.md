@@ -235,7 +235,15 @@ The repository is organized into several directories and files, each serving a s
    flutter run -d chrome
    ```
 
-5. **Run the Mobile App**  
+5.**Install Python libraries**  
+ ```bash
+   cd  backend
+   pip install -r requirements.txt
+
+   ```
+      
+
+6. **Run the Mobile App**  
    ```bash
    cd  mobile_app
    flutter run -d <device_id>  
