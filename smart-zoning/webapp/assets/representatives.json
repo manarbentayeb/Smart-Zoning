@@ -1,0 +1,84 @@
+{
+  "representatives": [
+    {
+      "name": "Amine Boudjemaa",
+      "email": "amine.boudjemaa@example.com"
+    },
+    {
+      "name": "Nora Belkacem",
+      "email": "nora.belkacem@example.com"
+    },
+    {
+      "name": "Karim Mansouri",
+      "email": "karim.mansouri@example.com"
+    },
+    {
+      "name": "Lina Mehenni",
+      "email": "lina.mehenni@example.com"
+    },
+    {
+      "name": "Yacine Ghezali",
+      "email": "yacine.ghezali@example.com"
+    },
+    {
+      "name": "Sara Bensaid",
+      "email": "sara.bensaid@example.com"
+    },
+    {
+      "name": "Walid Zemmouri",
+      "email": "walid.zemmouri@example.com"
+    },
+    {
+      "name": "Samira Haddad",
+      "email": "samira.haddad@example.com"
+    },
+    {
+      "name": "Nadir Charef",
+      "email": "nadir.charef@example.com"
+    },
+    {
+      "name": "Sabrina Ait",
+      "email": "sabrina.ait@example.com"
+    },
+    {
+      "name": "Mohamed Touati",
+      "email": "mohamed.touati@example.com"
+    },
+    {
+      "name": "Houda Kerrouche",
+      "email": "houda.kerrouche@example.com"
+    },
+    {
+      "name": "Tarek Boulahbel",
+      "email": "tarek.boulahbel@example.com"
+    },
+    {
+      "name": "Imane Rachidi",
+      "email": "imane.rachidi@example.com"
+    },
+    {
+      "name": "Zaki Djemai",
+      "email": "zaki.djemai@example.com"
+    },
+    {
+      "name": "Nesrine Cheriet",
+      "email": "nesrine.cheriet@example.com"
+    },
+    {
+      "name": "Bilal Mokrani",
+      "email": "bilal.mokrani@example.com"
+    },
+    {
+      "name": "Rania Benali",
+      "email": "rania.benali@example.com"
+    },
+    {
+      "name": "Adel Maouche",
+      "email": "adel.maouche@example.com"
+    },
+    {
+      "name": "Wissal Harizi",
+      "email": "wissal.harizi@example.com"
+    }
+  ]
+}
